@@ -1,0 +1,17 @@
+[package]
+name = "task-pipit-matrix-scanner"
+version = "0.1.0"
+edition = "2018"
+
+[features]
+panic-messages = ["userlib/panic-messages"]
+
+[dependencies]
+cortex-m = {version = "0.7", features = ["inline-asm"]}
+userlib = {path = "../../sys/userlib"}
+# TODO something for accessing gpios
+
+[[bin]]
+name = "task-pipit-matrix-scanner"
+test = false
+bench = false

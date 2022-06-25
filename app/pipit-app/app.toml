@@ -1,0 +1,100 @@
+name = "pipit-app"
+target = "thumbv7em-none-eabihf"
+board = "stm32f4-discovery"
+chip = "../../chips/stm32f4"
+# TODO can/should stacksize change?
+stacksize = 896
+
+[kernel]
+name = "pipit-app"
+# TODO can/should flash or ram size change?
+requires = {flash = 20000, ram = 3072}
+#
+# For the kernel (and for any task that logs), we are required to enable
+# either "itm" (denoting logging/panicking via ARM's Instrumentation Trace
+# Macrocell) or "semihosting" (denoting logging/panicking via ARM
+# semihosting).  We are biased to ITM because semihosting is excruciatingly
+# slow (it is breakpoint based) and has an undesirable failure mode if logging
+# output is generated and debugger is not attached (namely, the target stops).
+# If one does choose to change this to semihosting for purposes of
+# development, be sure to also change it in every task of interest.
+#
+features = ["itm", "stm32f4"]
+
+[outputs.flash]
+address = 0x08000000
+size = 262144
+read = true
+execute = true
+
+[outputs.ram]
+address = 0x20000000
+size = 114688
+read = true
+write = true
+execute = true
+
+[tasks.jefe]
+name = "task-jefe"
+priority = 0
+max-sizes = {flash = 8192, ram = 2048}
+start = true
+features = ["itm"]
+stacksize = 1536
+
+[tasks.rcc_driver]
+name = "drv-stm32fx-rcc"
+features = ["f4"]
+priority = 1
+max-sizes = {flash = 4096, ram = 1024}
+uses = ["rcc"]
+start = true
+
+[tasks.usart_driver]
+name = "drv-stm32fx-usart"
+features = ["stm32f4"]
+priority = 3
+max-sizes = {flash = 8192, ram = 1024}
+uses = ["usart2", "gpioa"]
+start = true
+interrupts = {"usart2.irq" = 1}
+task-slots = ["rcc_driver"]
+
+[tasks.user_leds]
+name = "drv-user-leds"
+features = ["stm32f4"]
+priority = 3
+max-sizes = {flash = 8192, ram = 1024}
+uses = ["gpiod"]
+start = true
+task-slots = ["rcc_driver"]
+
+[tasks.pipit_matrix_scanner]
+name = "task-pipit-matrix-scanner"
+priority = 2 # TODO what's a good priority? Should be pretty high, to react to pin interrupts
+max-sizes = {flash = 8192, ram = 1024}
+stacksize = 512
+start = true # TODO does this mean the task is automatically started on reset?
+task-slots = []
+
+[tasks.pipit_main]
+name = "task-pipit-main"
+priority = 3 # TODO what's a good priority? warning about priority inversion with user_leds...
+max-sizes = {flash = 8192, ram = 1024}
+stacksize = 512
+start = true 
+task-slots = ["user_leds", "pipit_matrix_scanner"] # TODO "usart_driver" for output?
+
+[tasks.hiffy]
+name = "task-hiffy"
+priority = 4
+max-sizes = {flash = 16384, ram = 16384 }
+stacksize = 2048
+start = true
+
+[tasks.idle]
+name = "task-idle"
+priority = 5
+max-sizes = {flash = 128, ram = 256}
+stacksize = 256
+start = true

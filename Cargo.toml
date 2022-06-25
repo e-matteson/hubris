@@ -34,6 +34,7 @@ members = [
     "app/gimlet-rot",
     "app/gimletlet",
     "app/lpc55xpresso",
+    "app/pipit-app",
     "app/psc",
     "app/sidecar",
 
@@ -47,6 +48,8 @@ members = [
     "task/hiffy",
     "task/net",
     "task/net-api",
+    "task/pipit-main",
+    "task/pipit-matrix-scanner",
     "task/power",
     "task/sensor",
     "task/sensor-api",
