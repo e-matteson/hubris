@@ -3070,7 +3070,9 @@ name = "task-pipit-matrix-scanner"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
+ "stm32f4",
  "userlib",
+ "zerocopy",
 ]
 
 [[package]]

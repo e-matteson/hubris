@@ -74,8 +74,10 @@ name = "task-pipit-matrix-scanner"
 priority = 2 # TODO what's a good priority? Should be pretty high, to react to pin interrupts
 max-sizes = {flash = 8192, ram = 1024}
 stacksize = 512
+uses = ["gpioa", "exti"]
 start = true # TODO does this mean the task is automatically started on reset?
-task-slots = []
+task-slots = ["rcc_driver"]
+interrupts = { "exti.exti0_irq" = 2 }
 
 [tasks.pipit_main]
 name = "task-pipit-main"

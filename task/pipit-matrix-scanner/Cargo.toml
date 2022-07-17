@@ -8,8 +8,10 @@ panic-messages = ["userlib/panic-messages"]
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["inline-asm"]}
+stm32f4 = { version = "0.13.0", features = ["stm32f407"]}
 userlib = {path = "../../sys/userlib"}
-# TODO something for accessing gpios
+zerocopy = "0.6.1"
+
 
 [[bin]]
 name = "task-pipit-matrix-scanner"
