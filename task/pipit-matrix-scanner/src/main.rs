@@ -65,6 +65,10 @@ pub fn main() -> ! {
                 //         sys_post(client.id, client.notification);
                 //     }
                 // }
+
+                // Manually generate interrupt request
+                let exti = unsafe { &*device::EXTI::ptr() };
+                exti.swier.modify(|_, w| w.swier0().set_bit());
             }
             if (msginfo.operation & EXTI_NOTIFICATION_MASK) != 0 {
                 if let Some(client) = &client {
